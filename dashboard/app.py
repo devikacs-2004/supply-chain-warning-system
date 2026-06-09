@@ -4,6 +4,9 @@ import pandas as pd
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+os.environ["NEWS_API_KEY"] = st.secrets["NEWS_API_KEY"]
+os.environ["OPENWEATHER_API_KEY"] = st.secrets["OPENWEATHER_API_KEY"]
+os.environ["AISSTREAM_API_KEY"] = st.secrets["AISSTREAM_API_KEY"]
 
 from src.nlp.disruption_detector import detect_disruptions, get_headlines
 from src.scoring.severity_scorer import score_severity
