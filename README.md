@@ -105,8 +105,6 @@ streamlit run dashboard/app.py
 
 ## 👥 Built By
 
-## 👥 Built By
-
 | Name | Role | LinkedIn | GitHub |
 |------|------|----------|--------|
 | Devika CS | Data pipeline, NLP detection, Ship data, Forecasting | [LinkedIn](www.linkedin.com/in/devika-cs-594511286) | [GitHub](https://github.com/devikacs-2004) |
