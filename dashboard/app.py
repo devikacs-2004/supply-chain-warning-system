@@ -63,3 +63,75 @@ if critical:
             st.plotly_chart(fig, use_container_width=True)
 else:
     st.success("✅ No critical alerts at this time.")
+
+# --- DISRUPTIONS TABLE ---
+st.divider()
+st.header("📰 Detected Disruptions")
+
+if scored:
+    df = pd.DataFrame(scored)
+    df = df.rename(columns={
+        "headline": "Headline",
+        "keywords": "Keywords",
+        "severity": "Severity Score",
+        "alert": "Status"
+    })
+    st.dataframe(df, use_container_width=True)
+else:
+    st.info("No disruptions detected in current headlines.")
+
+# --- WEATHER SECTION ---
+st.divider()
+st.header("🌤️ Major Port Weather")
+
+import requests
+from dotenv import load_dotenv
+load_dotenv()
+
+WEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
+ports = ["Shanghai", "Rotterdam", "Los Angeles", "Singapore", "Dubai"]
+
+weather_data = []
+for port in ports:
+    url = "https://api.openweathermap.org/data/2.5/weather"
+    params = {
+        "q": port,
+        "appid": WEATHER_API_KEY,
+        "units": "metric"
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+    weather_data.append({
+        "Port": port,
+        "Weather": data["weather"][0]["description"].title(),
+        "Temperature (°C)": data["main"]["temp"],
+        "Wind Speed (m/s)": data["wind"]["speed"]
+    })
+
+weather_df = pd.DataFrame(weather_data)
+st.dataframe(weather_df, use_container_width=True)
+
+# --- WORLD MAP ---
+st.divider()
+st.header("🗺️ Global Port Locations")
+
+port_coords = pd.DataFrame({
+    "Port": ["Shanghai", "Rotterdam", "Los Angeles", "Singapore", "Dubai"],
+    "lat": [31.2304, 51.9225, 34.0522, 1.3521, 25.2048],
+    "lon": [121.4737, 4.4792, -118.2437, 103.8198, 55.2708]
+})
+
+fig_map = px.scatter_geo(
+    port_coords,
+    lat="lat",
+    lon="lon",
+    text="Port",
+    title="Monitored Ports",
+    projection="natural earth"
+)
+fig_map.update_traces(marker=dict(size=12, color="red"))
+st.plotly_chart(fig_map, use_container_width=True)
+
+# Footer
+st.divider()
+st.caption("Data sources: NewsAPI • OpenWeatherMap • AISStream | Built with Streamlit + Prophet")
